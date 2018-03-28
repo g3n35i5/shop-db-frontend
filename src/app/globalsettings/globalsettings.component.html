@@ -1,6 +1,37 @@
 <app-navbar [navLeft]="[navLeft]" [navRight]="[navRight]"></app-navbar>
 <div class="row">
   <div class="col-xs-12 col-md-10 col-xl-8 mx-auto">
-    <h1>Global Settings</h1>
+    <div class="card">
+      <div class="card-body">
+        <p>
+          Please select whether you want to return to the overview
+          page after a purchase has been made.
+        </p>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio" id="redirectTrue" name="customRadio"
+            class="custom-control-input" [value]="true"
+            [(ngModel)]="redirect">
+          <label class="custom-control-label" for="redirectTrue">Redirect</label>
+        </div>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio" id="redirectFalse" name="customRadio"
+            class="custom-control-input" [value]="false"
+            [(ngModel)]="redirect">
+          <label class="custom-control-label" for="redirectFalse">Stay in the shop</label>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="saveSettings()"
+          [disabled]="loading">
+            {{ buttontext }}
+            <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
