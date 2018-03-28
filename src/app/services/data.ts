@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class DataService {
-  private apiurl = 'http://0.0.0.0:5000/'
+  public apiurl = 'http://0.0.0.0:5000/'
 
   constructor(public http: HttpClient) { }
 
@@ -20,6 +20,18 @@ export class DataService {
     return this.getData('purchases');
   }
 
+  public getConsumer(id: number) {
+    return this.getData('consumer/' + id.toString());
+  }
+
+  public getConsumerPurchases(id: number) {
+    return this.getData('consumer/' + id.toString() + '/purchases');
+  }
+
+  public getConsumerDeposits(id: number) {
+    return this.getData('consumer/' + id.toString() + '/deposits');
+  }
+
   public getProducts() {
     return this.getData('products');
   }
@@ -28,16 +40,30 @@ export class DataService {
     return this.getData('status');
   }
 
-  public getError() {
-    return this.getData('error');
+  public insertPurchase(data) {
+    return this.postData('purchases', data);
   }
+
 
   private getBackendStatus() {
     this.http.get(this.apiurl + 'status', {});
   }
+
   private getData(route) {
     this.getBackendStatus();
     return this.http.get(this.apiurl + route, {});
   }
 
+  private postData(route, data) {
+    this.getBackendStatus();
+    let token = localStorage.getItem('token');
+    if (typeof token === 'undefined' || token === null) {
+      token = '';
+    }
+    return this.http.post(this.apiurl + route, data, {
+      headers: {
+        token: token
+      }
+    });
+  }
 }
