@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../services/data';
 import { forkJoin } from "rxjs/observable/forkJoin";
 import { CurrencyPipe } from '@angular/common';
@@ -13,6 +13,8 @@ import { ScrollToService } from 'ng2-scroll-to-el';
 })
 export class ShopComponent implements OnInit {
   private id: number;
+  private scrollToTopOffset: number = 180;
+  private redirect: boolean = true;
   public navLeft: any[];
   public navRight: any[];
   public categories: any[] = [];
@@ -23,7 +25,6 @@ export class ShopComponent implements OnInit {
   public loading: boolean = true;
   public showCart: boolean = false;
   public disableInteraction: boolean = false;
-  private scrollToTopOffset: number = 180;
   public showScrollTop: boolean = false;
   public consumer;
   public products;
@@ -32,6 +33,7 @@ export class ShopComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private dataService: DataService,
     private scrollService: ScrollToService
   ) { }
@@ -47,7 +49,10 @@ export class ShopComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loading = true;
+    let storageRedirect = JSON.parse(localStorage.getItem('redirectAfterBuy'));
+    if (storageRedirect !== null) {
+      this.redirect = storageRedirect;
+    }
     this.navLeft = [];
     this.navLeft = [
       {
@@ -221,6 +226,10 @@ export class ShopComponent implements OnInit {
       this.cart = [];
       this.showCart = false;
     });
+
+    if (this.redirect) {
+      this.router.navigate(['/']);
+    }
   }
 
   increase(product) {
