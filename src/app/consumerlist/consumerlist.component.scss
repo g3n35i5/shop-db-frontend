@@ -1,3 +1,18 @@
 .consumerbutton {
-  text-transform: none;
+	text-transform: none;
+}
+
+.consumerbutton:hover {
+	border-radius: 0px;
+}
+
+.topbutton {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+}
+
+.topbutton:hover {
+	background-color: gray !important;
+	color: cyan !important;
 }

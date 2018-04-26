@@ -1,0 +1,21 @@
+<h1 class="display-2">Deposits</h1>
+<table class="table table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Comment</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+      <th scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let deposit of deposits.reverse()">
+      <th scope="row">{{ deposit.id }}</th>
+      <td>{{ deposit.comment }}</td>
+      <td>{{ deposit.timestamp | customDate }}</td>
+      <td>{{ deposit.timestamp | customTime }}</td>
+      <td>{{ deposit.amount | customCurrency | currency: 'EUR'}}</td>
+    </tr>
+  </tbody>
+</table>

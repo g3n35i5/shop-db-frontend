@@ -1,3 +1,27 @@
 .productimage {
-  max-width: 64px;
+  // max-width: 80px;
+  max-width: 100%;
+}
+
+.category-header {
+  z-index: 2;
+}
+
+.search-header {
+  z-index: 1;
+}
+
+.grayimage {
+  filter: grayscale(100%);
+}
+
+.topbutton {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+}
+
+.topbutton:hover {
+	background-color: gray !important;
+	color: cyan !important;
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../services/data';
 import { forkJoin } from "rxjs/observable/forkJoin";
 import { CurrencyPipe } from '@angular/common';
+import { ScrollToService } from 'ng2-scroll-to-el';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-consumer',
@@ -14,73 +16,84 @@ export class ConsumerComponent implements OnInit {
   public navLeft: any[];
   public navRight: any[];
   public loading: boolean = true;
+  public showDeposits: boolean = true;
+  public showPurchases: boolean = true;
+  public consumerlinks: any[];
+  private scrollToTopOffset: number = 180;
+  public showScrollTop: boolean = false;
+  public purchaseChart;
+  public creditChart;
   public consumer;
+  public products;
   public purchases;
   public deposits;
 
   constructor(
     private route: ActivatedRoute,
-    private dataService: DataService
+    private dataService: DataService,
+    private elementRef: ElementRef,
+    private scrollService: ScrollToService
   ) { }
 
+  @HostListener('window:scroll', ['$event'])
+    checkScroll() {
+      const scrollPosition = window.pageYOffset
+      this.showScrollTop = scrollPosition >= this.scrollToTopOffset;
+    }
+
+  scrollTo(element, duration=500, offset=0) {
+    this.scrollService.scrollTo(element, duration, offset);
+  }
+
   ngOnInit() {
-    this.loading = true;
-    this.navLeft = [];
-    this.navRight = ['consumerlist'];
+    this.consumerlinks = [
+      {
+        name: 'Overview',
+        active: true
+      },
+      {
+        name: 'Purchases',
+        active: false
+      },
+      {
+        name: 'Deposits',
+        active: false
+      }
+    ]
     this.route.params.subscribe(params => {
-       this.id = +params['id'];
-       let con = this.dataService.getConsumer(this.id);
-       let pur = this.dataService.getConsumerPurchases(this.id);
-       let dep = this.dataService.getConsumerDeposits(this.id);
-       forkJoin([con, pur, dep]).subscribe(results => {
-         this.consumer = results[0];
-         this.purchases = results[1];
-         this.deposits = results[2];
-         this.processingData()
-       });
+      this.id = +params['id'];
+      let con = this.dataService.getConsumer(this.id);
+      let pur = this.dataService.getConsumerPurchases(this.id);
+      let dep = this.dataService.getConsumerDeposits(this.id);
+      let prod = this.dataService.getProducts();
+      forkJoin([con, pur, dep, prod]).subscribe(results => {
+        this.consumer = results[0];
+        this.purchases = results[1];
+        this.deposits = results[2];
+        this.products = results[3];
+        this.processingData()
+      });
     });
+    this.navLeft = [
+      {
+        path: '/shop/' + this.id.toString(),
+        title: 'Shop',
+        icon:'fa fa-shopping-cart fa-fw'
+      }
+    ];
+    this.navRight = [
+      {
+        path: '/consumerlist',
+        title: 'Consumerlist',
+        icon:'fa fa-list fa-fw'
+      }
+    ];
   }
 
   processingData() {
-    this.loading = false;
+    // Set loading to false and show the frontend
+    this.loading = false
   }
 
-  creditClass(credit?: number) {
-    if (typeof credit === 'undefined') {
-      let credit = this.consumer.credit;
-    }
-    if (credit >= 1000) {
-      return 'text-success';
-    } else if (credit < 1000 && credit >= 0) {
-      return 'text-warning';
-    }
-    return 'text-danger';
-  }
 
-  extendCreditInformation() {
-    let credit = this.consumer.credit;
-    if (credit >= 1000) {
-      return 'Everything is fine!';
-    } else if (credit < 1000 && credit >= 0) {
-      return 'Please consider recharging your balance soon.';
-    }
-    return "Please pay your debts immediately, in this time \
-            your karma will be set to the lowest value!";
-  }
-
-  greeting() {
-    let thehours = new Date().getHours();
-
-    if (thehours >= 0 && thehours < 6) {
-      return 'Good evening'
-    } else if (thehours >= 6 && thehours < 12) {
-      return 'Good morning'
-    } else if (thehours >= 12 && thehours < 17) {
-      return 'Good afternoon'
-    } else if (thehours >= 17 && thehours < 24) {
-      return 'Good evening'
-    } else {
-      return 'Hello'
-    }
-  }
 }

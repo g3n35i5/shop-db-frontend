@@ -16,7 +16,11 @@ export class GlobalsettingsComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.navLeft = ['consumerlist'];
+    this.navLeft = [
+      {
+        path: '/consumerlist', title: 'Consumerlist',  icon:'fa fa-list fa-fw'
+      }
+    ];
     this.navRight = [];
     let storageRedirect = JSON.parse(localStorage.getItem('redirectAfterBuy'));
     if (storageRedirect !== null) {

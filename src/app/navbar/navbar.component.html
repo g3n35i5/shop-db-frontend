@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top top-header">
   <a class="navbar-brand" href="#">shop.db frontend</a>
   <button
     class="navbar-toggler"
@@ -14,7 +14,7 @@
   <div class="collapse navbar-collapse" id="navigationbar">
     <!-- Left navlinks -->
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item" *ngFor="let menuItem of leftmenuItems">
+      <li class="nav-item" *ngFor="let menuItem of navLeft">
         <a class="nav-link" href="" [routerLink]="[menuItem.path]">
           <i [ngClass]="[menuItem.icon]"></i>
           {{menuItem.title}}
@@ -23,7 +23,7 @@
     </ul>
     <!-- Right navlinks -->
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngFor="let menuItem of rightmenuItems">
+      <li class="nav-item" *ngFor="let menuItem of navRight">
         <a class="nav-link" href="" [routerLink]="[menuItem.path]">
           <i [ngClass]="[menuItem.icon]"></i>
           {{menuItem.title}}

@@ -1,51 +1,63 @@
-<app-navbar [navLeft]="[navLeft]" [navRight]="[navRight]"></app-navbar>
+<app-navbar [navLeft]="navLeft" [navRight]="navRight"></app-navbar>
 <div *ngIf="loading" class="text-center mt-5 text-secondary">
   <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
   <h4 class="mt-3">Loading</h4>
 </div>
-<div class="row content" *ngIf="!loading">
-  <div class="col-xs-12 col-md-11 col-xl-10 mx-auto">
+<div class="row content" *ngIf="!loading" id="top">
+  <div class="col-xs-12 col-md-11 mx-auto">
     <div class="row">
-      <div class="col">
-        <div class="card mb-4 text-center">
-          <div class="card-body">
-            <h5 class="card-title">{{ greeting() }} {{ consumer.name }}!</h5>
-            <h6 class="card-subtitle mb-2" [ngClass]="creditClass()">
-              Your current credit is
-              {{consumer.credit | customCurrency | currency: 'EUR'}}
-              {{ extendCreditInformation() }}
-            </h6>
-            <p class="card-text">
-              In this section you will find an overview of all
-              your purchases and deposits.
-            </p>
+      <div class="col-2">
+        <div class="list-group" id="list-tab" role="tablist">
+          <a class="list-group-item list-group-item-action active" data-toggle="list" href="#cont-overview" role="tab">
+            <i class="fa fa-fw fa-th-large"></i>
+            Overview
+          </a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#cont-purchases" role="tab">
+            <i class="fa fa-fw fa-th-list"></i>
+            Purchases
+          </a>
+          <a class="list-group-item list-group-item-action" data-toggle="list" href="#cont-deposits" role="tab">
+            <i class="fa fa-fw fa-money"></i>
+            Deposits
+          </a>
+        </div>
+      </div>
+      <div class="col-10">
+        <div class="tab-content" id="nav-tabContent">
+          <!-- Overview Section -->
+          <div class="tab-pane fade show active" id="cont-overview" role="tabpanel">
+            <app-consumer-overview
+              [consumer]="consumer"
+              [purchases]="purchases"
+              [deposits]="deposits"
+              [products]="products">
+            </app-consumer-overview>
+          </div>
+          <!-- Purchase Section -->
+          <div class="tab-pane fade" id="cont-purchases" role="tabpanel">
+            <app-consumer-purchases
+              [purchases]="purchases"
+              [products]="products">
+            </app-consumer-purchases>
+          </div>
+
+          <!-- Deposit Section  -->
+          <div class="tab-pane fade" id="cont-deposits" role="tabpanel">
+            <app-consumer-deposits
+              [deposits]="deposits">
+            </app-consumer-deposits>
           </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xl-6 col-lg-12ml-auto mb-4">
-        <div class="card">
-          <div class="card-header">
-            <i class="fa fa-fw fa-line-chart"></i>
-            &nbsp;Purchase Activity
-          </div>
-          <div class="card-body">
-            Content
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-6 col-lg-12 ml-auto mb-4">
-        <div class="card">
-          <div class="card-header">
-            <i class="fa fa-fw fa-line-chart"></i>
-            &nbsp;Credit History
-          </div>
-          <div class="card-body">
-            Content
-          </div>
-        </div>
-      </div>
-    </div>
+
+    <!-- Scroll to top button -->
+    <button
+      *ngIf="showScrollTop"
+      type="button"
+      (click)="scrollTo('#top', 250, -75)"
+      class="btn btn-secondary bmd-btn-fab topbutton">
+      <i class="fa fa-arrow-up"></i>
+    </button>
   </div>
 </div>

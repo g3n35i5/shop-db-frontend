@@ -13,6 +13,10 @@ export class DataService {
     return this.getData('consumers');
   }
 
+  public getDepartments() {
+    return this.getData('departments');
+  }
+
   public getPurchases(limit?: number) {
     if (limit) {
       return this.getData('purchases/' + limit.toString());
@@ -32,6 +36,10 @@ export class DataService {
     return this.getData('consumer/' + id.toString() + '/deposits');
   }
 
+  public getConsumerFavorites(id: number) {
+    return this.getData('consumer/' + id.toString() + '/favorites');
+  }
+
   public getProducts() {
     return this.getData('products');
   }
@@ -42,6 +50,14 @@ export class DataService {
 
   public insertPurchase(data) {
     return this.postData('purchases', data);
+  }
+
+  public revokePurchase(purchase) {
+    let data = {
+      id: purchase.id,
+      revoked: true
+    };
+    return this.putData('purchases/' + purchase.id.toString(), data);
   }
 
 
@@ -61,6 +77,19 @@ export class DataService {
       token = '';
     }
     return this.http.post(this.apiurl + route, data, {
+      headers: {
+        token: token
+      }
+    });
+  }
+
+  private putData(route, data) {
+    this.getBackendStatus();
+    let token = localStorage.getItem('token');
+    if (typeof token === 'undefined' || token === null) {
+      token = '';
+    }
+    return this.http.put(this.apiurl + route, data, {
       headers: {
         token: token
       }

@@ -1,174 +1,198 @@
-<app-navbar [navLeft]="[navLeft]" [navRight]="[navRight]"></app-navbar>
+<app-navbar [navLeft]="navLeft" [navRight]="navRight"></app-navbar>
 <div *ngIf="loading" class="text-center mt-5 text-secondary">
   <i class="fa fa-circle-o-notch fa-spin fa-5x"></i>
   <h4 class="mt-3">Loading</h4>
 </div>
-<div *ngIf="!loading">
-  <nav class="navbar navbar-expand-lg navbar-light">
-    <button *ngFor="let category of categories" type="button" class="btn btn-primary">{{category}}</button>
-    <div class="ml-auto">
-      <span class="navbar-text lead" [ngClass]="creditClass()">
-        <i class="fa fa-fw fa-money"></i>
-        {{ consumer.credit | customCurrency | currency: 'EUR' }}
-      </span>
-      <button
-        type="button" class="btn btn-primary"
-        [routerLink]="['/consumer', consumer.id]">
-        <i class="fa fa-fw fa-user"></i>
-        {{ consumer.name }}
+<div *ngIf="!loading" id="top">
+  <div ngui-sticky sticky-after=".top-header" class="category-header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-white">
+      <button *ngFor="let category of categories" type="button" [ngClass]="category.active ? 'btn btn-secondary' : 'btn btn-primary'" (click)="changeCategory(category)">
+        {{category.title}}
       </button>
-    </div>
-    <div class="d-xl-none ml-auto">
-      <button
-        type="button"
-        class="btn btn-primary bmd-btn-fab bmd-btn-fab-sm">
-        <i class="fa fa-shopping-cart"></i>
-      </button>
-      <span class="badge badge-secondary">{{cart.length}}</span>
-    </div>
-  </nav>
-
+      <div class="ml-auto">
+        <span class="navbar-text lead mr-2" [ngClass]="karmaClass()">
+          <i class="fa fa-fw fa-heart"></i>
+          {{ consumer.karma }}
+        </span>
+        <span class="navbar-text lead" [ngClass]="creditClass()">
+          <i class="fa fa-fw fa-money"></i>
+          {{ consumer.credit | customCurrency | currency: 'EUR' }}
+        </span>
+        <button type="button" class="btn btn-primary" [routerLink]="['/consumer', consumer.id]">
+          <i class="fa fa-fw fa-user"></i>
+          {{ consumer.name }}
+        </button>
+      </div>
+    </nav>
+  </div>
 
   <div class="row content">
-    <div class="col-xs-12 col-md-11 col-xl-10 mx-auto">
-      <div class="row">
-        <div class="col-5 d-none d-xl-block">
-          <div class="card">
-            <div class="card-header align-middle text-center">
-              <h4>
-                <i class="fa fa-shopping-cart"></i>
-                Shopping Cart
-              </h4>
-            </div>
-            <div class="card-body">
-              <div *ngIf="showCart">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col" class="text-left">Name</th>
-                      <th scope="col">Amount</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Sum</th>
-                      <th scope="col"></th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let product of cart">
-                      <th scope="row" class="text-left align-middle d-flex flex-wrap">
-                        {{ product.name }}
-                      </th>
-                      <td class="align-middle">
-                        {{ product.amount }}
-                      </td>
-                      <td class="align-middle">
-                        {{ product.price | customCurrency | currency: 'EUR' }}
-                      </td>
-                      <td class="align-middle">
-                        {{ product.price * product.amount | customCurrency | currency: 'EUR' }}
-                      </td>
-                      <td class="align-middle">
-                        <button
-                          type="button"
-                          (click)="increase(product)"
-                          class="btn btn-success bmd-btn-icon text-success">
-                          <i class="fa fa-plus"></i>
-                        </button>
-                      </td>
-                      <td class="align-middle">
-                        <button
-                          type="button"
-                          (click)="decrease(product)"
-                          class="btn btn-success bmd-btn-icon text-danger">
-                          <i class="fa fa-minus"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td><strong>Sum: </strong></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <strong>
-                          {{ basketSum() | customCurrency | currency:'EUR' }}
-                        </strong>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><strong>New credit: </strong></td>
-                      <td></td>
-                      <td></td>
-                      <td>
-                        <strong [ngClass]="cartCreditClass()">
-                          {{ consumer.credit - basketSum() | customCurrency | currency:'EUR' }}
-                        </strong>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-                <button
-                  type="button" (click)="cartBuy()"
-                  class="btn btn-raised btn-success"
-                  [disabled]="disableInteraction">
-                    Buy
-                  <i class="fa fa-check" *ngIf="!disableInteraction"></i>
-                  <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
-                </button>
-                <button
-                  type="button" (click)="cartDelete()"
-                  class="btn btn-raised btn-danger"
-                  [disabled]="disableInteraction">
-                  Delete
-                  <i class="fa fa-trash-o" *ngIf="!disableInteraction"></i>
-                  <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
-                </button>
+    <div class="col-xs-12 col-md-11 mx-auto">
+      <div class="d-flex flex-row">
+        <div class="col-5">
+          <div ngui-sticky sticky-after=".category-header">
+            <div class="card">
+              <div class="card-header align-middle text-center">
+                <h4>
+                  <i class="fa fa-shopping-cart"></i>
+                  Shopping Cart
+                </h4>
               </div>
-              <div *ngIf="!showCart" class="text-center">
-                <i class="fa fa-info fa-2x"></i>
-                <p class="d-flex align-items-center">
-                  You do not have any products in your shopping cart yet.
-                  Click the button next to a product to add it.
-                </p>
-
+              <div class="card-body">
+                <div *ngIf="showCart">
+                  <button type="button" (click)="cartBuy()" class="btn btn-raised btn-success" [disabled]="disableInteraction">
+                      Buy
+                    <i class="fa fa-check" *ngIf="!disableInteraction"></i>
+                    <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
+                  </button>
+                  <button type="button" (click)="cartDelete()" class="btn btn-raised btn-danger" [disabled]="disableInteraction">
+                    Delete
+                    <i class="fa fa-trash-o" *ngIf="!disableInteraction"></i>
+                    <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
+                  </button>
+                  <table class="table">
+                    <tbody>
+                      <tr class="row" *ngFor="let product of cart">
+                        <td class="col-6">
+                          <div class="row">
+                            <div class="col-12">
+                              <h5>
+                                <span class="text-info">
+                                  <strong>
+                                    {{ product.amount }}x
+                                  </strong>
+                                </span>
+                                {{ product.name }}
+                              </h5>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-8">
+                              Price:
+                              {{ product.price | customCurrency | currency: 'EUR' }}
+                            </div>
+                          </div>
+                        </td>
+                        <td class="col-2 d-flex align-items-center">
+                          {{ product.price * product.amount | customCurrency | currency: 'EUR' }}
+                        </td>
+                        <td class="col-2 d-flex align-items-center text-center">
+                          <button type="button" (click)="increase(product)" class="btn btn-success bmd-btn-icon text-success">
+                            <i class="fa fa-plus"></i>
+                          </button>
+                        </td>
+                        <td class="col-2 d-flex align-items-center text-center">
+                          <button type="button" (click)="decrease(product)" class="btn btn-success bmd-btn-icon text-danger">
+                            <i class="fa fa-minus"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- Current credit -->
+                  <div class="row mt-2">
+                    <div class="col-8 text-left">
+                      <strong>
+                        Current credit
+                      </strong>
+                    </div>
+                    <div class="col-4 text-right">
+                      <strong [ngClass]="creditClass()">
+                        {{ consumer.credit | customCurrency | currency:'EUR' }}
+                      </strong>
+                    </div>
+                  </div>
+                  <!-- Basket sum -->
+                  <div class="row">
+                    <div class="col-8 text-left">
+                      <strong>
+                        Sum
+                      </strong>
+                    </div>
+                    <div class="col-4 text-right">
+                      <strong>
+                        {{ basketSum() | customCurrency | currency:'EUR' }}
+                      </strong>
+                    </div>
+                  </div>
+                  <!-- New credit -->
+                  <div class="row">
+                    <div class="col-8 text-left">
+                      <strong>
+                        New credit
+                      </strong>
+                    </div>
+                    <div class="col-4 text-right">
+                      <strong [ngClass]="cartCreditClass()">
+                        {{ consumer.credit - basketSum() | customCurrency | currency:'EUR' }}
+                      </strong>
+                    </div>
+                  </div>
+                  <hr>
+                  <button type="button" (click)="cartBuy()" class="btn btn-raised btn-success" [disabled]="disableInteraction">
+                      Buy
+                    <i class="fa fa-check" *ngIf="!disableInteraction"></i>
+                    <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
+                  </button>
+                  <button type="button" (click)="cartDelete()" class="btn btn-raised btn-danger" [disabled]="disableInteraction">
+                    Delete
+                    <i class="fa fa-trash-o" *ngIf="!disableInteraction"></i>
+                    <i class="fa fa-circle-o-notch fa-spin" *ngIf="disableInteraction"></i>
+                  </button>
+                </div>
+                <div *ngIf="!showCart" class="text-center">
+                  <i class="fa fa-info fa-2x"></i>
+                  <p class="d-flex align-items-center">
+                    You do not have any products in your shopping cart yet. Click the button next to a product to add it.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col">
+        <div class="col w-100">
           <div class="card">
-            <div class="card-header">
-              <input class="form-control form-control-lg" type="search" placeholder="Search product">
+            <div ngui-sticky sticky-after=".category-header" class="search-header">
+              <div class="card-header bg-white">
+                <div class="row">
+                  <div class="col">
+                    <input class="form-control form-control-lg" type="search" placeholder="Search product" (input)="productFilter(products)" [(ngModel)]="productsearch">
+                  </div>
+                  <div class="col-2">
+                    <button type="button" [disabled]="!productsearch" class="btn btn-danger btn-lg btn-block" (click)="productsearch = ''">
+                      <i class="fa fa-fw fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="card-body">
-              <table class="table">
+              <table class="table table-hover">
                 <thead>
-                  <tr>
-                    <th scope="col"></th>
-                    <th scope="col" class="text-left">Name</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Buy</th>
+                  <tr class="row">
+                    <th class="col-2"></th>
+                    <th class="col-6">Name</th>
+                    <th class="col-2">Price</th>
+                    <th class="col-2">Buy</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let product of products">
-                    <td class="align-middle">
+                  <tr class="row" *ngFor="let product of productFilter(products)">
+                    <td class="col-2 text-center d-flex align-items-center">
                       <img
                         [src]="[imageUrl(product.image)]"
-                        class="productimage img-fluid rounded-circle">
+                        class="productimage img-fluid"
+                        [ngClass]="productClass(product)"
+                        >
                     </td>
-                    <th scope="row" class="text-left align-middle d-flex flex-wrap">
+                    <td class="col-6 d-flex align-items-center">
                       {{product.name}}
-                    </th>
-                    <td class="align-middle">
+                    </td>
+                    <td class="col-2 d-flex align-items-center">
                       {{product.price | customCurrency | currency: 'EUR'}}
                     </td>
-                    <td class="align-middle">
-                      <button
-                        type="button"
-                        (click)="addToCart(product)"
-                        class="btn btn-success bmd-btn-icon text-success">
+                    <td class="col-2 d-flex align-items-center">
+                      <button type="button" (click)="addToCart(product)" class="btn btn-success bmd-btn-icon text-success shopbtn">
                         <i class="fa fa-cart-plus"></i>
                       </button>
                     </td>
@@ -178,9 +202,11 @@
             </div>
           </div>
         </div>
-
       </div>
-
+      <!-- Scroll to top button -->
+      <button *ngIf="showScrollTop" type="button" (click)="scrollTo('#top', 250, -75)" class="btn btn-secondary bmd-btn-fab topbutton">
+        <i class="fa fa-arrow-up"></i>
+      </button>
     </div>
   </div>
 </div>

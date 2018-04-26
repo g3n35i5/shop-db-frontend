@@ -20,8 +20,16 @@ export class GlobalhistoryComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-    this.navLeft = ['consumerlist'];
-    this.navRight = ['globalsettings'];
+    this.navLeft = [
+      {
+        path: '/consumerlist', title: 'Consumerlist',  icon:'fa fa-list fa-fw'
+      }
+    ];
+    this.navRight = [
+      {
+        path: '/globalsettings', title: 'Global Settings',  icon:'fa fa-cog fa-fw'
+      }
+    ];
 
     let pur = this.dataService.getPurchases(100);
     let con = this.dataService.getConsumers();
@@ -36,6 +44,9 @@ export class GlobalhistoryComponent implements OnInit {
 
   processingData() {
     for (let purchase of this.history) {
+      if (purchase.revoked) {
+        this.history = this.history.filter(i => i !== purchase);
+      }
       let consumer = this.consumers.find(i => i.id === purchase.consumer_id);
       let product = this.products.find(i => i.id === purchase.product_id);
       purchase.consumer = consumer;

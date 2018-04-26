@@ -14,6 +14,18 @@ export class FirstLetterEqual implements PipeTransform {
   }
 }
 
+@Pipe({ name: 'customTime' })
+export class CustomTime implements PipeTransform {
+  transform(input: string, format='HH:MM'): string {
+    if (typeof(input) === "undefined" || input === null) {
+      return 'unknown'
+    }
+    let date = moment(new Date(input));
+    return date.format(format);
+  }
+}
+
+
 @Pipe({ name: 'customDate' })
 export class CustomDate implements PipeTransform {
   transform(input: string): string {

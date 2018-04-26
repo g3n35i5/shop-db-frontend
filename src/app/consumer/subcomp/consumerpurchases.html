@@ -1,0 +1,44 @@
+<h1 class="display-2">Purchases</h1>
+<table class="table table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Product</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Price</th>
+      <th scope="col">Sum</th>
+      <th scope="col">Date</th>
+      <th scope="col">Time</th>
+      <th scope="col">Revoke</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let purchase of purchases.reverse()"
+      [ngClass]="{'table-active' : purchase.revoked}">
+      <th scope="row">{{ purchase.id }}</th>
+      <td>{{ purchase.product.name }}</td>
+      <td>{{ purchase.amount }}</td>
+      <td>{{ purchase.price | customCurrency | currency: 'EUR'}}</td>
+      <td>{{ purchase.sum | customCurrency | currency: 'EUR'}}</td>
+      <td>{{ purchase.timestamp | customDate }}</td>
+      <td>{{ purchase.timestamp | customTime }}</td>
+      <td>
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-block"
+          (click)="revoke(purchase)"
+          [disabled]="disableInteraction || purchase.revoked">
+          <span *ngIf="!disableInteraction">
+            <i class="fa fa-fw fa-undo"></i>
+            Revoke
+          </span>
+          <span *ngIf="disableInteraction">
+            <i class="fa fa-fw fa-circle-o-notch fa-spin"></i>
+            Wait
+          </span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

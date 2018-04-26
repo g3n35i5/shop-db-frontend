@@ -1,0 +1,10 @@
+.topbutton {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+}
+
+.topbutton:hover {
+	background-color: gray !important;
+	color: cyan !important;
+}

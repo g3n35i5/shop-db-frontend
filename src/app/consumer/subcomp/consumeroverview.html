@@ -1,0 +1,87 @@
+<div class="row">
+  <div class="col">
+    <div class="card mb-4 text-center">
+      <div class="card-body">
+        <h5 class="card-title">{{ greeting() }} {{ consumer.name }}!</h5>
+        <h6 class="card-subtitle mb-2" [ngClass]="creditClass()">
+          {{ extendCreditInformation() }}
+        </h6>
+        <p class="card-text">
+          In this section you will find an overview of all
+          your purchases and deposits.
+        </p>
+        <div class="row">
+          <div class="col">
+            <h1 class="display-2" [ngClass]="creditClass()">
+              <i class="fa fa-fw fa-money"></i>
+              {{ consumer.credit | customCurrency | currency: 'EUR'}}
+            </h1>
+          </div>
+          <div class="col">
+            <h1 class="display-2" [ngClass]="karmaClass()">
+              <i class="fa fa-fw fa-heart"></i>
+              {{ consumer.karma }} / 18
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-xl-6 col-lg-12ml-auto mb-4">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-fw fa-bar-chart"></i>
+        &nbsp;Purchase Activity
+      </div>
+      <div class="card-body">
+        <canvas
+          baseChart
+          [datasets]="purchaseChart.data"
+          [labels]="purchaseChart.labels"
+          [chartType]="purchaseChart.type"
+          [options]="purchaseChart.options"
+          [legend]="purchaseChart.legend">
+        </canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6 col-lg-12 ml-auto mb-4">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-fw fa-line-chart"></i>
+        &nbsp;Credit History
+        <div class="custom-control custom-checkbox custom-control-inline float-right">
+          <input
+            type="checkbox"
+            [(ngModel)]="showPurchases"
+            (change)="generateCreditChart()"
+            id="showPurchases"
+            class="custom-control-input">
+          <label class="custom-control-label" for="showPurchases">Purchases</label>
+        </div>
+        <div class="custom-control custom-checkbox custom-control-inline float-right">
+          <input
+            type="checkbox"
+            [(ngModel)]="showDeposits"
+            (change)="generateCreditChart()"
+            id="showDeposits"
+            class="custom-control-input">
+          <label class="custom-control-label" for="showDeposits">Deposits</label>
+        </div>
+      </div>
+      <div class="card-body">
+        <canvas
+          baseChart
+          [datasets]="creditChart.data"
+          [labels]="creditChart.labels"
+          [chartType]="creditChart.type"
+          [options]="creditChart.options"
+          [legend]="creditChart.legend">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
