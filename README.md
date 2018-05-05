@@ -22,7 +22,7 @@ the `dist/` directory. Use the `-prod` flag for a production build.
 ## Serve
 
 This is an example nginx configuration to serve the shop-db-frontend.
-It assumes that the shop-db-frontend repo is located in /var/www.
+It assumes that the shop-db-frontend repo was cloned to `/var/www`.
 
 ```bash
 server {
