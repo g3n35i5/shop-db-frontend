@@ -89,9 +89,11 @@ export class ShopComponent implements OnInit {
   }
 
   productFilter(products) {
-    let search = this.productsearch;
+    let search = this.productsearch.toLowerCase();
     if (typeof search !== 'undefined' && search !== '') {
-      let res = this.products.filter(i => i.name.includes(this.productsearch));
+      let res = this.products.filter(i =>
+        i.name.ToLowerCase().includes(search)
+      );
       return this.sortProducts(res);
     }
     let active = this.categories.find(i => i.active);
